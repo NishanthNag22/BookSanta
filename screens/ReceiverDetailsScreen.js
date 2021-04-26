@@ -4,32 +4,31 @@ import { Card, Header, Icon } from 'react-native-elements';
 import firebase from 'firebase';
 import db from '../config.js';
 
-export default class RecieverDetailsScreen extends Component {
+export default class ReceiverDetailsScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             userId: firebase.auth().currentUser.email,
-            recieverId: this.props.navigation.getParam('details')["userId"],
+            receiverId: this.props.navigation.getParam('details')["userId"],
             requestId: this.props.navigation.getParam('details')["requestId"],
             bookName: this.props.navigation.getParam('details')["bookName"],
             reasonForRequesting: this.props.navigation.getParam('details')["reasonToRequest"],
-            recieverName: '',
-            recieverContact: '',
-            recieverAddress: '',
-            recieverRequestDocId: ''
+            ReceiverName: '',
+            ReceiverContact: '',
+            ReceiverAddress: '',
+            ReceiverRequestDocId: '',
+            userName: ''
         }
     }
 
-
-
-    getRecieverDetails() {
-        db.collection('users').where('emailId', '==', this.state.recieverId).get()
+    getReceiverDetails() {
+        db.collection('users').where('emailId', '==', this.state.receiverId).get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     this.setState({
-                        recieverName: doc.data().firstName,
-                        recieverContact: doc.data().contact,
-                        recieverAddress: doc.data().address,
+                        ReceiverName: doc.data().firstName,
+                        ReceiverContact: doc.data().contact,
+                        ReceiverAddress: doc.data().address,
                     })
                 })
             });
@@ -37,7 +36,7 @@ export default class RecieverDetailsScreen extends Component {
         db.collection('RequestedBooks').where('requestId', '==', this.state.requestId).get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
-                    this.setState({ recieverRequestDocId: doc.id })
+                    this.setState({ ReceiverRequestDocId: doc.id })
                 })
             })
     }
@@ -46,18 +45,29 @@ export default class RecieverDetailsScreen extends Component {
         db.collection('allDonations').add({
             bookName: this.state.bookName,
             requestId: this.state.requestId,
-            requestedBy: this.state.recieverName,
+            requestedBy: this.state.ReceiverName,
             donorId: this.state.userId,
             requestStatus: "Donor Interested"
         })
     }
 
-
+    addNotification = () => {
+        var message =
+            this.state.userName + ' has shown interest in donating the book';
+        db.collection('allNotifications').add({
+            targetedUserId: this.state.receiverId,
+            donorId: this.state.userId,
+            requestId: this.state.requestId,
+            bookName: this.state.bookName,
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+            notificationStatus: 'unread',
+            message: message,
+        });
+    };
 
     componentDidMount() {
-        this.getRecieverDetails()
+        this.getReceiverDetails()
     }
-
 
     render() {
         return (
@@ -66,7 +76,7 @@ export default class RecieverDetailsScreen extends Component {
                     <Header
                         leftComponent={<Icon name='arrow-left' type='feather' color='#696969' onPress={() => this.props.navigation.goBack()} />}
                         centerComponent={{ text: "Donate Books", style: { color: '#90A5A9', fontSize: 20, fontWeight: "bold", } }}
-                        backgroundColor="#eaf8fe"
+                        backgroundColor="#EAF8Fe"
                     />
                 </View>
                 <View style={{ flex: 0.5 }}>
@@ -84,28 +94,30 @@ export default class RecieverDetailsScreen extends Component {
                 </View>
                 <View style={{ flex: 0.4 }}>
                     <Card
-                        title={"Reciever Information"}
+                        title={"Receiver Information"}
                         titleStyle={{ fontSize: 20 }}
                     >
                         <Card>
-                            <Text style={{ fontWeight: 'bold' }}>Name: {this.state.recieverName}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Name: {this.state.ReceiverName}</Text>
                         </Card>
                         <Card>
-                            <Text style={{ fontWeight: 'bold' }}>Contact: {this.state.recieverContact}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Contact: {this.state.ReceiverContact}</Text>
                         </Card>
                         <Card>
-                            <Text style={{ fontWeight: 'bold' }}>Address: {this.state.recieverAddress}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Address: {this.state.ReceiverAddress}</Text>
                         </Card>
                     </Card>
                 </View>
                 <View style={styles.buttonContainer}>
                     {
-                        this.state.recieverId !== this.state.userId
+                        this.state.receiverId !== this.state.userId
                             ? (
                                 <TouchableOpacity
                                     style={styles.button}
                                     onPress={() => {
                                         this.updateBookStatus()
+                                        this.addNotification()
+                                        this.props.navigation.navigate('BookDonateList')
                                         this.props.navigation.navigate('MyDonations')
                                     }}>
                                     <Text>I want to Donate</Text>
@@ -117,9 +129,7 @@ export default class RecieverDetailsScreen extends Component {
             </View>
         )
     }
-
 }
-
 
 const styles = StyleSheet.create({
     container: {

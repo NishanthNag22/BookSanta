@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import BookDonateScreen from '../screens/bookDonateScreen';
-import BookRequestScreen from '../screens/bookRequestScreen';
+import BookDonateScreen from '../screens/BookDonateScreen';
+import BookRequestScreen from '../screens/BookRequestScreen';
 import { AppStackNavigator } from './AppStackNavigator';
 
 export const AppTabNavigator = createBottomTabNavigator({

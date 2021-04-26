@@ -1,7 +1,8 @@
 import React from 'react';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import MyDonationsScreen from '../screens/MyDonationsScreen';
-import SettingsScreens from '../screens/settingsScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import { AppTabNavigator } from './AppTabNavigator'
 import CustomSideBarMenu from './CustomSideBarMenu';
 
@@ -12,8 +13,11 @@ export const AppDrawerNavigator = createDrawerNavigator({
     MyDonations: {
         screen: MyDonationsScreen
     },
-    Setting: {
-        screen: SettingsScreens
+    Notifications: {
+        screen: NotificationsScreen
+    },
+    Settings: {
+        screen: SettingsScreen
     }
 },
     {
