@@ -33,7 +33,7 @@ export default class ReceiverDetailsScreen extends Component {
                 })
             });
 
-        db.collection('RequestedBooks').where('requestId', '==', this.state.requestId).get()
+        db.collection('requestedBooks').where('requestId', '==', this.state.requestId).get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     this.setState({ ReceiverRequestDocId: doc.id })

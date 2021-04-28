@@ -14,7 +14,8 @@ export default class WelcomeScreen extends Component {
       lastName: '',
       contact: '',
       address: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      isBookRequestActive: false
     }
   }
 
@@ -40,7 +41,8 @@ export default class WelcomeScreen extends Component {
             lastName: this.state.lastName,
             contact: this.state.contact,
             emailId: this.state.emailId,
-            address: this.state.address
+            address: this.state.address,
+            isBookRequestActive: false
           })
           return alert(
             'User Added Successfully',
